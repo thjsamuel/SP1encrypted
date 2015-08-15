@@ -1,0 +1,17 @@
+﻿Build started 15/8/2015 7:55:43 PM.
+     1>Project "C:\Users\Theai\Documents\SP1Samuel\SP1Framework.vcxproj" on node 2 (build target(s)).
+     1>InitializeBuildStatus:
+         Creating "Debug\SP1Framework.unsuccessfulbuild" because "AlwaysCreate" was specified.
+       ClCompile:
+         All outputs are up-to-date.
+       Link:
+         All outputs are up-to-date.
+         SP1Framework.vcxproj -> C:\Users\Theai\Documents\SP1Samuel\Debug\SP1Framework.exe
+       FinalizeBuildStatus:
+         Deleting file "Debug\SP1Framework.unsuccessfulbuild".
+         Touching "Debug\SP1Framework.lastbuildstate".
+     1>Done Building Project "C:\Users\Theai\Documents\SP1Samuel\SP1Framework.vcxproj" (build target(s)).
+
+Build succeeded.
+
+Time Elapsed 00:00:00.80
