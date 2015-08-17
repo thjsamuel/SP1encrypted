@@ -7,6 +7,8 @@
 #include <iomanip>
 // Samuel: Going to take in a file so
 #include <fstream>
+// Also going to use string for getline to work
+#include <string>
 
 using std::cout;
 using std::endl;
@@ -24,7 +26,9 @@ bool	g_abKeyPressed[K_COUNT];
 COORD	g_cCharLocation;
 COORD	g_cConsoleSize;
 // Samuel: Gonna create my own cCharLocation
-COORD g_cCharLocation2;
+COORD   g_cCharLocation2;
+// Samuel: Gonna create maze coord, hopefully it works out
+COORD   g_cMaze; 
 
 //--------------------------------------------------------------
 // Purpose	: Initialisation function
@@ -285,14 +289,34 @@ void render( void )
     colour(0x1A);
     std::cout << (char)58;
 
-    /*std::ifstream inData;
-    //std::ofstream outData;
+    std::ifstream inData;
+    //std::ofstream outData; Samuel: i can use it to stream to inData first then transport to OutData, giving me a txt vesion of the maze
+    std::string data;
 
-    inData.open("SP1Maze.txt");
-    while (!inData.eof())
+    inData.open("SP1MazeAlsoOld.txt");
+    while (!inData.eof()) //commented out cause limpeh need for loop
     {
-        cout << inData << endl;
-    }*/
+    for (size_t i = 0; i < 20; ++i) // 21 is width of maze
+    {
+        std::getline(inData, data);
+        for (size_t j = 0; j < 20; ++j)
+            if (data[j] == 1)
+            {
+                g_cMaze.X = i;
+                g_cMaze.Y = j;
+                break;
+            }
+            //else
+              //  continue;
+        //cout << data << endl;
+            break;
+    }
+                gotoXY(g_cMaze);
+                colour(0xA1);
+                std::cout << '1';
+
+    }
+    inData.close();
 }
 
 int menu(int s)
