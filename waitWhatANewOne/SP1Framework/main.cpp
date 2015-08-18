@@ -17,6 +17,9 @@ void mainLoop();
 int main()
 {
 	init();      // initialize your variables
+    //system("pause");
+    //int z = menu();
+    //if (z != 2 && z != 3)
     mainLoop();  // main loop
     shutdown();  // do clean up, if any. free memory.
 	
