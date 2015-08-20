@@ -57,6 +57,11 @@ void printMaze();
 void runMaze(int row, int col); // finds solution to maze
 void splashScreen();
 void renderAfter();
+void Ghost();                  // AI code starts here
+bool ghostMoveUp();
+bool ghostMoveDown();
+bool ghostMoveLeft();
+bool ghostMoveRight();
 
 void moveCharacter();       // moves the character, collision detection, physics, etc
 void processUserInput();    // checks if you should change states or do something else with the game, e.g. pause, exit
