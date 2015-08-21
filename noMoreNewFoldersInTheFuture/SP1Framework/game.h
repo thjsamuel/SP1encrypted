@@ -41,6 +41,16 @@ struct SGameChar
     bool  m_bActive;
 };
 
+struct PowerUp
+{
+	COORD cLocation;
+};
+
+struct Enemies
+{
+	COORD coordinate;
+};
+
 void init        ( void );      // initialize your variables, allocate memory, etc
 void getInput    ( void );      // get input from player
 void update      ( double dt ); // update the game and the state of the game
@@ -70,6 +80,8 @@ void renderFramerate();     // renders debug information, frame rate, elapsed ti
 void renderToScreen();      // dump the contents of the buffer to the screen, one frame worth of game
 void updateTraps();         // Samuel: Updates healthbar after trap activates
 void renderTraps();         // Samuel: Displays updated healthbar after falling into trap
-void randSpawn();
+void randSpawn();           // Samuel: Random enemy spawning at different times but at the same trigger area
+void Collectibles();        // Samuel: Powerup collectibles
+//void collectElapsedTime( double d_Time );  // Samuel: Using elapsed time for my variables
 
 #endif // _GAME_H

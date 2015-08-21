@@ -6,6 +6,10 @@
 #include <iostream>
 #include <iomanip>
 #include <sstream>
+#include <fstream>
+#include <string>
+// Samuel: to add music
+#include <MMSystem.h>
 
 using std::cout;
 using std::endl;
@@ -23,6 +27,8 @@ using std::string;
 double  g_dElapsedTime;
 double  g_dDeltaTime;
 bool    g_abKeyPressed[K_COUNT];
+// to create a tutorial tip show time
+//double  g_dElappsedTime;
 
 // Game specific variables here
 SGameChar   g_sChar;
@@ -52,6 +58,7 @@ char heart = char(3);
 int chance = 0;
 int unit = 0;
 bool spawn = false;
+PowerUp speed;
 
 char maze[ROWMAX][COLMAX] =
 {
@@ -104,26 +111,26 @@ void runMaze(int row, int col) // finds solution to maze
 
 const int MAXROWS = 80;
 const int MAXCOLUMNS = 23;
-char levelMatrix[MAXROWS][MAXCOLUMNS] = 
+unsigned char levelMatrix[MAXROWS][MAXCOLUMNS] = 
 {	
 	{35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35},//1 col^
-	{35,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,35},//2
+	{35,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,62,35},//2
 	{35,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,35},//3
-	{32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,35},//4
-	{32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,35},//5
-	{35,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,35},//6
-	{35,32,32,32,32,32,32,32,32,65,35,35,35,35,35,35,35,35,35,35,35,35,35},//7
-    {35,32,32,32,32,32,32,32,32,65,35,35,35,35,35,35,35,35,35,35,35,35,35},//8
-	{35,32,32,32,32,32,32,32,32,65,32,32,32,32,32,32,32,32,32,32,32,32,35},//9
+	{32,32,32,32,32,32,32,32,62,32,94,94,94,94,94,94,94,94,94,94,94,32,35},//4
+	{32,32,32,32,32,32,32,32,62,32,32,32,32,32,32,32,32,32,32,32,32,32,35},//5
+	{35,32,32,32,32,32,32,32,62,32,32,32,32,32,32,32,32,32,32,32,32,32,35},//6
+	{35,32,32,32,32,32,32,32,62,65,35,35,35,35,35,35,35,35,35,35,35,35,35},//7
+    {35,32,32,32,32,32,32,32,62,65,35,35,35,35,35,35,35,35,35,35,35,35,35},//8
+	{35,32,32,32,32,32,32,32,62,65,32,32,32,32,32,32,32,32,32,32,32,32,35},//9
 	{35,32,32,32,32,32,32,32,32,65/**/,32,32,32,32,32,32,32,32,32,32,32,32,35},//10
 	{35,32,32,32,32,32,32,32,32,65,32,32,32,32,32,32,32,32,32,32,32,32,35},//11
 	{35,32,32,32,32,32,32,32,32,65,32,32,32,32,32,32,32,32,32,32,32,32,35},//12
 	{35,32,32,32,32,32,32,32,32,65,32,35,32,32,32,32,32,32,32,32,32,32,35},//13
 	{35,32,32,32,32,32,32,32,32,65,35,35,35,35/**/,35,35/**/,35,35,35,35,35,35,35},//14
 	{35,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,35},//15
-	{35,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,35},//16
+	{35,32,63,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,35},//16
 	{35,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,35},//17
-	{35,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,35},//18
+	{35,32,32,32,32,32,32,32,32,32,32,32,124,32,32,32,32,32,32,32,32,32,35},//18
 	{35,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,35},//19
 	{35,32,32,32,32,32,32,32,32,97,35,35,35,35,35,35,35,35,35,35,35,35,35},//20
 	{35,32,32,32,32,32,32,32,32,97,32,32,32,32,32,32,32,32,32,32,32,32,35},//21
@@ -184,7 +191,7 @@ char levelMatrix[MAXROWS][MAXCOLUMNS] =
 	{35,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,35},//76
 	{35,32,32,32,32,32,32,32,32,32,32,32,33,33,32,32,32,32,32,32,32,32,35},//77
 	{35,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,35},//78
-	{35,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,32,35},//79
+	{35,32,32,32,32,32,32,32,32,32,35,32,32,32,32,32,32,32,32,32,32,32,35},//79
 	{35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35,35}//80
 };
 
@@ -193,9 +200,10 @@ int ghostOneX = 70, ghostOneY = 16; // I is Y, J is X
 char ghostCurrent = levelMatrix[ghostOneX][ghostOneY];
 char ghostTrail = ghostCurrent[&ghostOneX][&ghostOneY];
 //bool isWot = false;
+Enemies boulder;
 
 // Console object
-Console g_Console(80, 25, "SP1 Framework");
+Console g_Console(80, 25, "SP1 FastSneak");
 
 //--------------------------------------------------------------
 // Purpose  : Initialisation function
@@ -209,17 +217,22 @@ void init( void )
     // Set precision for floating point output
     g_dElapsedTime = 0.0;
     g_dBounceTime = 0.0;
+    //g_dElappsedTime = 0.0;
 
     // sets the initial state for the game
     g_eGameState = S_SPLASHSCREEN;
 
-    g_sChar.m_cLocation.X = 1;//g_Console.getConsoleSize().X / 2;
-    g_sChar.m_cLocation.Y = 1;//g_Console.getConsoleSize().Y / 2;
+    g_sChar.m_cLocation.X = 3;//g_Console.getConsoleSize().X / 2;
+    g_sChar.m_cLocation.Y = 21;//g_Console.getConsoleSize().Y / 2;
     g_cCharLocation2.X = g_Console.getConsoleSize().X / 3;
     g_cCharLocation2.Y = g_Console.getConsoleSize().Y / 3;
     g_sChar.m_bActive = true;
     // sets the width, height and the font name to use in the console
     g_Console.setConsoleFont(0, 16, L"JESUS");
+    PlaySound(TEXT("D.wav"), NULL, SND_ASYNC | SND_LOOP | SND_FILENAME);
+    // initialise the 2nd ghost
+    boulder.coordinate.X = 77;
+    boulder.coordinate.Y = 8;
 }
 
 //--------------------------------------------------------------
@@ -295,6 +308,11 @@ void update(double dt)
       
       randSpawn();
 }
+
+/*void collectElapsedTime(double d_Time)
+{
+    g_dElappsedTime += d_Time;
+}*/
 //--------------------------------------------------------------
 // Purpose  : Render function is to update the console screen
 //            At this point, you should know exactly what to draw onto the screen.
@@ -313,6 +331,7 @@ void render()
         case S_GAME: renderGame();
             break;
     }
+    Collectibles();
     renderFramerate();  // renders debug information, frame rate, elapsed time, etc
     renderToScreen();   // dump the contents of the buffer to the screen, one frame worth of game
 }
@@ -432,7 +451,7 @@ void processUserInput()
 void clearScreen()
 {
     // Clears the buffer with this colour attribute
-    g_Console.clearBuffer(0x1F);
+    g_Console.clearBuffer(0x00); // 0x1F
 }
 
 void renderSplashScreen()  // renders the splash screen
@@ -477,40 +496,62 @@ void renderMap()
 		 {	
             c.X = 0 + x;
 			c.Y = 0 + y;
-            g_Console.writeToBuffer(c, levelMatrix[x][y], 0x1A);
+            g_Console.writeToBuffer(c, levelMatrix[x][y], 0x4E);
 		 }
     }
+    //for (int i = 0; i <= 24; ++i)
+      //  for (int j = 0; j <= 80; ++j)
+        //{
+            int count = 0;
+            c.X = 15;
+            c.Y = count;
+            /*std::ifstream inData;
+            //std::ofstream outData;
+            string data;
+            inData.open ("tutorial.txt"); // associate & open files
+            //outData.open ("file2.txt");
+            while(!inData.eof()) 
+            {
+                std::getline (inData, data); // read from input file
+              //  outData << data << endl; // write to output file
+                g_Console.writeToBuffer(c, data, 0x1A);
+                //g_Console.writeToBuffer(c, '\n');
+                ++c.Y;
+            }
+            inData.close (); // close files
+            //outData.close ();*/
+        //}
     //g_Console.writeToBuffer(c, g_cHealthBar, 0x1A);
     //renderTraps();
     c.X = 0;
 	c.Y = 24;
 	if( i > 0)
 	{
-		g_Console.writeToBuffer(c, heart);
+		g_Console.writeToBuffer(c, heart, 0x4D);
 	}
 	c.X = 1;
 	c.Y = 24;
 	if(i >1)
 	{
-		g_Console.writeToBuffer(c, heart);
+		g_Console.writeToBuffer(c, heart, 0x4D);
 	}
 	c.X = 2;
 	c.Y = 24;
 	if(i >2)
 	{
-		g_Console.writeToBuffer(c, heart);
+		g_Console.writeToBuffer(c, heart, 0x4D);
 	}
 	c.X = 3;
 	c.Y = 24;
 	if(i >3)
 	{
-		g_Console.writeToBuffer(c, heart);
+		g_Console.writeToBuffer(c, heart, 0x4D);
 	}
 	c.X = 4;
 	c.Y = 24;
 	if(i > 4)
 	{
-		g_Console.writeToBuffer(c, heart);
+		g_Console.writeToBuffer(c, heart, 0x4D);
 	}
     //renderTraps();
 }
@@ -555,6 +596,12 @@ void updateTraps()
 {
 	if(levelMatrix[g_sChar.m_cLocation.X][(g_sChar.m_cLocation.Y)] == 33)
 		--i;
+    if (i == 0)
+	{
+		levelMatrix[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] = 32;
+		g_sChar.m_cLocation.X = 1;
+		g_sChar.m_cLocation.Y = 1;
+	}
 }
 
 /*void renderTraps()
@@ -808,4 +855,67 @@ void randSpawn()
 			spawn = true;
 		}
 	}
+}
+
+void Collectibles()
+{
+	COORD c;
+	c.X = 0;
+	c.Y = 23;
+	if (levelMatrix[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == 63)
+	{
+		
+		std::ifstream inData;
+		//ofstream outData;
+		string data;
+		inData.open ("tutorialTip.txt"); // associate & open files
+		//outData.open ("file2.txt");
+		for (int i = 1; i <= 2; ++i) {
+			std::getline (inData, data); // read from input file
+			// (i == 2)
+			g_Console.writeToBuffer(c, data, 0x4E);
+			if (i == 1)
+			{
+				c.X = 15;
+				c.Y = 23;
+				g_Console.writeToBuffer(c, data, 0x4E);
+			}
+			//utData << data << endl; // write to output file
+		}
+		inData.close(); // close files
+		//outData.close ();
+		//collectElapsedTime(0);
+	}
+	//if (g_dElappsedTime > 5)
+    //else if (levelMatrix[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == 63)
+    //if (levelMatrix[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] != 63)
+	    //levelMatrix[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] = 32;
+	if (levelMatrix[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == 63)
+	{
+		++i;
+	}
+	speed.cLocation.X = 30;
+	speed.cLocation.Y = 12;
+	levelMatrix[speed.cLocation.X][speed.cLocation.Y] = 62;
+	if (levelMatrix[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == 62)
+	{   
+		if (g_abKeyPressed[K_RIGHT] && g_sChar.m_cLocation.X < g_Console.getConsoleSize().X - 1)
+		{
+			if (levelMatrix[g_sChar.m_cLocation.X + 1][(g_sChar.m_cLocation.Y)] != 35)
+		        g_sChar.m_cLocation.X+=3;
+		}
+	}
+    if (levelMatrix[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == 124)
+        if (levelMatrix[g_sChar.m_cLocation.X + 1][g_sChar.m_cLocation.Y] == 32 && levelMatrix[g_sChar.m_cLocation.X + 2][g_sChar.m_cLocation.Y] == 35)
+            g_sChar.m_cLocation.X += 12;
+    // if (ghost touch portal) ghost position remain, portal remain, or add collision
+    if (levelMatrix[g_sChar.m_cLocation.X][g_sChar.m_cLocation.Y] == 94)
+        if (g_abKeyPressed[K_UP] && g_sChar.m_cLocation.Y > 0)
+        {
+            if (levelMatrix[g_sChar.m_cLocation.X][(g_sChar.m_cLocation.Y - 1)] != 35)//if there is no "35" wall above player 1
+            {
+                //Beep(1440, 30);
+                g_sChar.m_cLocation.Y-=3;
+            }
+        }
 }
